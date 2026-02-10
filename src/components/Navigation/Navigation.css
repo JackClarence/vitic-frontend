@@ -1,0 +1,31 @@
+.navigation{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.navigation__name{
+    font-size: larger;
+}
+
+.navigation__btn{
+    background-color: transparent;
+}
+
+.navigation__link{
+    margin: 0;
+    padding: 0;
+}
+
+.navigation__links{
+    display: flex;
+    margin: 0 0 0 auto;
+}
+
+.navigation__about{
+    height: 100%;
+}
+
+.navigation__authentication{
+    display: flex;
+}
