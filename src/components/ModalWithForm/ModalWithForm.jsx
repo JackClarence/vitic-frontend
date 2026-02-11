@@ -9,8 +9,13 @@ function ModalWithForm({
   isOpen,
   onCloseModal,
   nameInput,
-  values
+  values,
+  modalMessage
 }) {
+  let modalErrorElement;
+  if(modalMessage){
+    modalErrorElement = (<p className="modal__form_error">{modalMessage}</p>);
+  };
   return (
     <div className={`modal ${isOpen ? "modal_open": ""}`}>
       <div className="modal__content">
@@ -50,6 +55,7 @@ function ModalWithForm({
             />
           </label>
           {nameInput}
+          {modalErrorElement}
           <button className="modal__submit">{buttonText}</button>
         </form>
       </div>

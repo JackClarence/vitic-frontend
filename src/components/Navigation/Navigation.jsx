@@ -10,7 +10,7 @@ function Navigation({ isLoggedIn, handleLoginClick, handleSignUpClick, loggedNam
       <div className="navigation__links">
         {isLoggedIn ? (
           <Link to="/about">
-            <button className="substitute navigation__btn">{loggedName}</button>
+            <button className="navigation__btn">{loggedName}</button>
           </Link>
         ) : (
           <div className="navigation__authentication navigation__links">

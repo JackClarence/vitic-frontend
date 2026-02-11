@@ -23,6 +23,8 @@ function App() {
   const [grossOrNet2, setGrossOrNet2] = useState("");
   const [activeModal, setActiveModal] = useState("");
   const [usePreloader, setUsePreloader] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
+  const [modalMessage, setModalMessage] = useState();
 
   const maStateTaxes = (grossIncome) => {
     if (grossIncome <= 1083150) {
@@ -105,15 +107,21 @@ function App() {
       }else if(values.income > 0){
         taxes = await getTaxes(values)
         .then((res)=> {
+          setErrorMessage();
           const sortedMonthly = monthlyNet(values.income, res.federal_taxes_owed, res.fica_total, values.region, values.filing_status);
           return sortedMonthly;
         })
-        .catch(console.error);
+        .catch((err) => {
+          console.log(err);
+          setErrorMessage("Sorry, something went wrong during the request. There may be a connection issue or the server may be down. Please try again later.");
+        });
       }else{
         console.error();
+        setErrorMessage("Sorry, something went wrong with the data passed.");
       };
       return taxes;
     } else{
+      setErrorMessage("Nothing Found");
       return console.error("Nothing Found");
     };
   };
@@ -164,6 +172,7 @@ function App() {
   };
 
   const closeModal = () => {
+    setModalMessage();
     setActiveModal("");
   };
 
@@ -184,26 +193,35 @@ function App() {
   };
 
   const onSignUpUser = (user) => {
-    localStorage.setItem(`user-${user.email}`, JSON.stringify({
-      email: user.email,
-      password: user.password,
-      name: user.name
-    }));
-    const retrieved = retrieveLoginInfo(user.email);
-    onLoginUser(retrieved);
-    closeModal();
+    const emptyUser = user.email === "" || user.name === "" || user.password === "";
+    if(user && !emptyUser && user !== null){
+      localStorage.setItem(`user-${user.email}`, JSON.stringify({
+        email: user.email,
+        password: user.password,
+        name: user.name
+      }));
+      const retrieved = retrieveLoginInfo(user.email);
+      onLoginUser(retrieved);
+      closeModal();
+    }else{
+      setModalMessage("Invalid Data");
+    };
   };
 
   const onLoginUser = (user) => {
-    persistEmail(user.email);
     const retrieved = retrieveLoginInfo(user.email);
-    setIsLoggedIn(true);
-    setLoggedEmail(retrieved.email);
-    setLoggedName(retrieved.name);
-    if(retrieved !== null){
-      setRetrievedCalcData(JSON.parse(localStorage.getItem(`user-${retrieved.email}-data`)));
+    if(retrieved && retrieved !== null){
+      persistEmail(user.email);
+      setIsLoggedIn(true);
+      setLoggedEmail(retrieved.email);
+      setLoggedName(retrieved.name);
+      if(retrieved !== null){
+        setRetrievedCalcData(JSON.parse(localStorage.getItem(`user-${retrieved.email}-data`)));
+      };
+      closeModal();
+    }else{
+      setModalMessage("Invalid Data");
     };
-    closeModal();
   };
 
   const onLogOut = () => {
@@ -220,6 +238,12 @@ function App() {
     setGrossOrNet1("");
     setGrossOrNet2("");
   };
+  
+  useEffect(() => {
+    setTimeout(() => {
+      setErrorMessage();
+    }, 10000);
+  }, [errorMessage]);
 
   useEffect(() => {
     const persistedEmail = localStorage.getItem("persistedEmail");
@@ -262,6 +286,7 @@ function App() {
               onCalculate={handleCalculate}
               retrievedCalcData={retrievedCalcData}
               usePreloader={usePreloader}
+              errorMessage={errorMessage}
             />}
           />
           <Route path="/about" element={
@@ -274,8 +299,8 @@ function App() {
           />
         </Routes>
         <Footer />
-        <LoginModal onLoginUser={onLoginUser} onCloseModal={closeModal} isOpen={activeModal === "login-modal"}/>
-        <SignUpModal onSignUpUser={onSignUpUser} onCloseModal={closeModal} isOpen={activeModal === "sign-up-modal"}/>
+        <LoginModal onLoginUser={onLoginUser} onCloseModal={closeModal} isOpen={activeModal === "login-modal"} modalMessage={modalMessage}/>
+        <SignUpModal onSignUpUser={onSignUpUser} onCloseModal={closeModal} isOpen={activeModal === "sign-up-modal"} modalMessage={modalMessage}/>
       </div>
     </div>
   )

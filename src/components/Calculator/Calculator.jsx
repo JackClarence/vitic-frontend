@@ -51,6 +51,7 @@ function Calculator({onCalculate, retrievedCalcData}) {
               className="calculator__input"
               onChange={handleChange}
               value={ values.income }
+              min={0}
             />
           </label>
           <label htmlFor="salary-second" className="calculator__label">
@@ -63,6 +64,7 @@ function Calculator({onCalculate, retrievedCalcData}) {
               className="calculator__input"
               onChange={handleChange2}
               value={values2.income}
+              min={0}
             />
           </label>
         </div>

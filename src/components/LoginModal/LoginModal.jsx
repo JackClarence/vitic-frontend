@@ -1,7 +1,7 @@
 import {useInput} from "../../utils/useInput";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 
-function LoginModal({onLoginUser, onCloseModal, isOpen}) {
+function LoginModal({onLoginUser, onCloseModal, isOpen, modalMessage}) {
     const defValues = {email: "", password: ""};
     const { values, setValues, handleChange } = useInput(defValues);
     const handleSubmit = async (evt) => {
@@ -19,6 +19,7 @@ function LoginModal({onLoginUser, onCloseModal, isOpen}) {
             isOpen={isOpen}
             onCloseModal={onCloseModal}
             values={values}
+            modalMessage={modalMessage}
         >
         </ModalWithForm>
         

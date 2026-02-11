@@ -18,8 +18,6 @@ function getTaxes(data){
         contentType: 'application/json'
     }).then((res) => {
         return checkRes(res);
-    }).catch(() => {
-        console.error("Sorry, something went wrong during the request. There may be a connection issue or the server may be down. Please try again later.");
     });
 };
 
