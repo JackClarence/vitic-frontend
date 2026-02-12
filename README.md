@@ -9,3 +9,4 @@ It utilizes React, Vite, and ESLint. It also utilizes local storage in order to 
 [This link](https://jackclarence.github.io/vitic-frontend) will take you to where the project is hosted on GitHub Pages.
 
 [This link](https://drive.google.com/file/d/1GPz1Ios1o-WQuEY144Qun6niW9aqHgTX/view?usp=sharing) will take you to a video where I describe the project some more, with some insight into choices and challenges during its development.
+*Since recording this video, API Ninjas has updated their "Income Tax Calculator API" to require their premium subscription in order to access the fica tax information, so this data is now calculated on the front end. The federal tax information is still pulled from the API responses.*

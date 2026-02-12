@@ -77,8 +77,13 @@ function App() {
     };
   };
 
-  const monthlyNet = (grossIncome, federalTaxes, ficaTotal, state, filingStatus) => {
-    return ((grossIncome - federalTaxes - ficaTotal - stateTaxes(state, grossIncome, filingStatus)) / 12).toFixed(2);
+  const ficaTaxes = (grossIncome) => {
+    console.log(grossIncome * 0.0765);
+    return grossIncome * 0.0765;
+  };
+
+  const monthlyNet = (grossIncome, federalTaxes, state, filingStatus) => {
+    return ((grossIncome - federalTaxes - ficaTaxes(grossIncome) - stateTaxes(state, grossIncome, filingStatus)) / 12).toFixed(2);
   };
   const netMaxRent= (monthly, percentValue) => {
     if(percentValue === 0.3){
@@ -108,7 +113,7 @@ function App() {
         taxes = await getTaxes(values)
         .then((res)=> {
           setErrorMessage();
-          const sortedMonthly = monthlyNet(values.income, res.federal_taxes_owed, res.fica_total, values.region, values.filing_status);
+          const sortedMonthly = monthlyNet(values.income, res.federal_taxes_owed, values.region, values.filing_status);
           return sortedMonthly;
         })
         .catch((err) => {
