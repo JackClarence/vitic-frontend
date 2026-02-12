@@ -1,0 +1,34 @@
+.about{
+    display: flex;
+    margin-top: 80px;
+}
+
+.about__profile{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+    align-items: center;
+    gap: 42px;
+}
+
+.about__profile_sub{
+    width: 20%;
+}
+
+.about__vitic{
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.about__vitic_text{
+    max-width: 800px;
+}
+
+@media screen and (max-width: 600px) {
+    .about__vitic_text{
+        max-width: 80%;
+    }
+}
