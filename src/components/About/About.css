@@ -12,6 +12,12 @@
     gap: 42px;
 }
 
+.about__profile_email{
+    text-align: center;
+    width: 100%;
+    word-wrap: break-word;
+}
+
 .about__profile_sub{
     width: 20%;
 }
