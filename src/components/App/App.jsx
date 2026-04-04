@@ -70,15 +70,15 @@ function App() {
   };
 
   const stateTaxes = (state, grossIncome, filingStatus) => {
-    if(state === "MA"){
-      return maStateTaxes(grossIncome);
-    } else if(state === "MO"){
-      return moStateTaxes(grossIncome, filingStatus);
+    switch(state) {
+      case "MA":
+        return maStateTaxes(grossIncome);
+      case "MO":
+        return moStateTaxes(grossIncome, filingStatus);
     };
   };
 
   const ficaTaxes = (grossIncome) => {
-    console.log(grossIncome * 0.0765);
     return grossIncome * 0.0765;
   };
 
