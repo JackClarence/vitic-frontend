@@ -11,11 +11,20 @@ const bracket = (taxable, bottom, top, percent, initial) => {
 };
 
 export const stateTaxFormulas = {
-  maStateTaxes: function (grossIncome) {
-    if (grossIncome <= 1083150) {
-      return grossIncome * 0.05;
+  maStateTaxes: function (grossIncome, filingStatus) {
+    let taxable;
+    if(filingStatus === "Single"){
+      taxable = grossIncome - 4400;
+    } else if(filingStatus === "Married"){
+      taxable = grossIncome - 8800;
+    } else{
+      console.error;
+    };
+
+    if (taxable <= 1083150) {
+      return taxable * 0.05;
     } else {
-      return (1083150 * 0.05 + (grossIncome - 1083150) * 0.04).toFixed(2);
+      return (1083150 * 0.05 + (taxable - 1083150) * 0.09).toFixed(2);
     }
   },
 
@@ -31,8 +40,8 @@ export const stateTaxFormulas = {
     };
 
     const firstBracket = (taxable) => bracket(taxable, 1313, 2626, 0.02, 0);
-    const secondBracket = (taxable) => bracket(taxable, 2626, 3939, 0.025, 26);
-    const thirdBracket = (taxable) => bracket(taxable, 3939, 5252, 0.03, 59);
+    const secondBracket = (taxable) => bracket(taxable, 2626, 3939, 0.025, 26.26);
+    const thirdBracket = (taxable) => bracket(taxable, 3939, 5252, 0.03, 59.82);
     const fourthBracket = (taxable) => bracket(taxable, 5252, 6565, 0.035, 98);
     const fifthBracket = (taxable) => bracket(taxable, 6565, 7878, 0.04, 144);
     const sixthBracket = (taxable) => bracket(taxable, 7878, 9191, 0.045, 197);
