@@ -50,9 +50,11 @@ function App() {
     return console.error();
   };
 
-  const sortMonthly = async (values, percentValue, setGrossOrNet) => {
-
-    if(isLoggedIn && (retrievedCalcData.date !== currentYear || (retrievedCalcData.firstPerson.income !== values.income && retrievedCalcData.secondPerson.income !== values.income) || (retrievedCalcData.firstPerson.filing_status !== values.filing_status && retrievedCalcData.secondPerson.filing_status !== values.filing_status) || retrievedCalcData.firstPerson.region !== values.region || (retrievedCalcData.firstPerson.percentage !== percentValue && retrievedCalcData.secondPerson.percentage !== percentValue))){
+  const sortMonthly = async (values, percentValue, setGrossOrNet, personOneOrTwo) => {
+    const checkValue = (person, variable) => {
+      return retrievedCalcData[person][variable] !== values[variable];
+    };
+    if(isLoggedIn && (retrievedCalcData.date !== currentYear || checkValue(personOneOrTwo, `income`) || checkValue(personOneOrTwo, `filing_status`) || checkValue(personOneOrTwo, `region`) || checkValue(personOneOrTwo, `percentage`))){
       if(percentValue === 0.3){
         setGrossOrNet("Gross");
         return ((values.income/12)).toFixed(2);
@@ -92,8 +94,8 @@ function App() {
     }
   };
 
-  const calculateMonthly = async (values, percentValue, setMonth, setNetMax, setGrossOrNet) => {
-    const sortedMonthly = await sortMonthly(values, percentValue, setGrossOrNet);
+  const calculateMonthly = async (values, percentValue, setMonth, setNetMax, setGrossOrNet, personOneOrTwo) => {
+    const sortedMonthly = await sortMonthly(values, percentValue, setGrossOrNet, personOneOrTwo);
     const netMax = netMaxRent(sortedMonthly, percentValue);
     const calculated = {sortedMonthly, netMax};
     applyStates(calculated, setMonth, setNetMax);
@@ -128,8 +130,8 @@ function App() {
 
   const handleCalculate = async (values, values2, percentValues, percentValues2) => {
     setUsePreloader(true);
-    const monthly1 = await calculateMonthly(values, percentValues.percentage, setMonthly1, setNetMax1, setGrossOrNet1);
-    const monthly2 = await calculateMonthly(values2, percentValues2.percentage, setMonthly2, setNetMax2, setGrossOrNet2);
+    const monthly1 = await calculateMonthly(values, percentValues.percentage, setMonthly1, setNetMax1, setGrossOrNet1, `firstPerson`);
+    const monthly2 = await calculateMonthly(values2, percentValues2.percentage, setMonthly2, setNetMax2, setGrossOrNet2, `secondPerson`);
     const rentTotal = (+monthly1.netMax + +monthly2.netMax).toFixed(2);
     setMaxRent(rentTotal);
     if(isLoggedIn){
