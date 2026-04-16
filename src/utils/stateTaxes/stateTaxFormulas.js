@@ -40,5 +40,25 @@ export const stateTaxFormulas = {
 
     taxAmount = (firstBracket(taxable)+secondBracket(taxable)+thirdBracket(taxable)+fourthBracket(taxable)+fifthBracket(taxable)+sixthBracket(taxable)+seventhBracket(taxable)).toFixed(2);
     return taxAmount;
+  },
+
+  vtStateTaxes: function (grossIncome, filingStatus){
+    let taxable;
+    let taxAmount = 0;
+    if(filingStatus === "Single"){
+      taxable = grossIncome - 3825;
+    } else if(filingStatus === "Married"){
+      taxable = grossIncome - 11475;
+    } else{
+      console.error;
+    };
+
+    const firstBracket = (taxable) => bracket(taxable, 3825, 53225, 0.0335, 0);
+    const secondBracket = (taxable) => bracket(taxable, 53225, 123525, 0.066, 1654.90);
+    const thirdBracket = (taxable) => bracket(taxable, 123525, 253525, 0.076, 2355.05);
+    const fourthBracket = (taxable) => bracket(taxable, 253525, Infinity, 0.0875, 9880);
+
+    taxAmount = (firstBracket(taxable)+secondBracket(taxable)+thirdBracket(taxable)+fourthBracket(taxable));
+    return taxAmount;
   }
 };

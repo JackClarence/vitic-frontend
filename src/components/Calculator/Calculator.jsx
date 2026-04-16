@@ -117,6 +117,9 @@ function Calculator({onCalculate, retrievedCalcData}) {
               <option value="MO" name="MO">
                 MO
               </option>
+              <option value="VT" name="VT">
+                VT
+              </option>
             </select>
           </label>
         </div>
