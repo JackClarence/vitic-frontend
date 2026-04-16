@@ -14,6 +14,7 @@ function App() {
   const [loggedEmail, setLoggedEmail] = useState("");
   const [loggedName, setLoggedName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentYear, setCurrentYear] = useState();
   const [monthly1, setMonthly1] = useState(0);
   const [monthly2, setMonthly2] = useState(0);
   const [netMax1, setNetMax1] = useState(0);
@@ -50,34 +51,45 @@ function App() {
   };
 
   const sortMonthly = async (values, percentValue, setGrossOrNet) => {
-    if(percentValue === 0.3){
-      setGrossOrNet("Gross");
-      return ((values.income/12)).toFixed(2);
-    } else if(percentValue === 0.25){
-      let taxes;
-      setGrossOrNet("Net");
-      if(values.income === "" || values.income === 0 || values.income === "0"){
-        taxes = 0;
-      }else if(values.income > 0){
-        taxes = await getTaxes(values)
-        .then((res)=> {
-          setErrorMessage();
-          const sortedMonthly = monthlyNet(values.income, res.federal_taxes_owed, values.region, values.filing_status);
-          return sortedMonthly;
-        })
-        .catch((err) => {
-          console.log(err);
-          setErrorMessage("Sorry, something went wrong during the request. There may be a connection issue or the server may be down. Please try again later.");
-        });
-      }else{
-        console.error();
-        setErrorMessage("Sorry, something went wrong with the data passed.");
+
+    if(isLoggedIn && (retrievedCalcData.date !== currentYear || (retrievedCalcData.firstPerson.income !== values.income && retrievedCalcData.secondPerson.income !== values.income) || (retrievedCalcData.firstPerson.filing_status !== values.filing_status && retrievedCalcData.secondPerson.filing_status !== values.filing_status) || retrievedCalcData.firstPerson.region !== values.region || (retrievedCalcData.firstPerson.percentage !== percentValue && retrievedCalcData.secondPerson.percentage !== percentValue))){
+      if(percentValue === 0.3){
+        setGrossOrNet("Gross");
+        return ((values.income/12)).toFixed(2);
+      } else if(percentValue === 0.25){
+        let taxes;
+        setGrossOrNet("Net");
+        if(values.income === "" || values.income === 0 || values.income === "0"){
+          taxes = 0;
+        }else if(values.income > 0){
+          taxes = await getTaxes(values)
+            .then((res)=> {
+              setErrorMessage();
+              const sortedMonthly = monthlyNet(values.income, res.federal_taxes_owed, values.region, values.filing_status);
+              return sortedMonthly;
+            })
+            .catch((err) => {
+              console.log(err);
+              setErrorMessage("Sorry, something went wrong during the request. There may be a connection issue or the server may be down. Please try again later.");
+            });
+        }else{
+          console.error();
+          setErrorMessage("Sorry, something went wrong with the data passed.");
+        };
+        return taxes;
+      } else{
+        setErrorMessage("Nothing Found");
+        return console.error("Nothing Found");
       };
-      return taxes;
     } else{
-      setErrorMessage("Nothing Found");
-      return console.error("Nothing Found");
-    };
+      if(retrievedCalcData.firstPerson.income === values.income && retrievedCalcData.firstPerson.filing_status === values.filing_status && retrievedCalcData.firstPerson.percentage === values.percentage){
+        const sortedMonthly = monthly1;
+        return sortedMonthly;
+      } else{
+        const sortedMonthly = monthly2;
+        return sortedMonthly;
+      }
+    }
   };
 
   const calculateMonthly = async (values, percentValue, setMonth, setNetMax, setGrossOrNet) => {
@@ -110,7 +122,8 @@ function App() {
       monthly: monthly2.sortedMonthly,
       netMax: monthly2.netMax
     },
-    maxRent: rentTotal
+    maxRent: rentTotal,
+    date: new Date().getFullYear()
   }};
 
   const handleCalculate = async (values, values2, percentValues, percentValues2) => {
@@ -121,7 +134,9 @@ function App() {
     setMaxRent(rentTotal);
     if(isLoggedIn){
       localStorage.setItem(`user-${loggedEmail}-data`, JSON.stringify(calcData(values, values2, percentValues, percentValues2, monthly1, monthly2, rentTotal)));
+      setRetrievedCalcData(calcData(values, values2, percentValues, percentValues2, monthly1, monthly2, rentTotal));
     }
+    
     setUsePreloader(false);
   };
 
@@ -202,6 +217,7 @@ function App() {
   useEffect(() => {
     const persistedEmail = localStorage.getItem("persistedEmail");
     if(persistedEmail !== null){
+      setCurrentYear(new Date().getFullYear());
       const retrievedLoginInfo = retrieveLoginInfo(persistedEmail);
       onLoginUser(retrievedLoginInfo);
       setRetrievedCalcData(JSON.parse(localStorage.getItem(`user-${persistedEmail}-data`)));
@@ -210,6 +226,8 @@ function App() {
 
   useEffect(() => {
     if(typeof(retrievedCalcData) === "object" && retrievedCalcData !== null){
+      setMonthly1(retrievedCalcData.firstPerson.monthly);
+      setMonthly2(retrievedCalcData.secondPerson.monthly);
       if(retrievedCalcData.firstPerson.percentage === 0.25){
         setGrossOrNet1("Net");
       }else if(retrievedCalcData.firstPerson.percentage === 0.3){
