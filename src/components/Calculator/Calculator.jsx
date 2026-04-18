@@ -111,6 +111,9 @@ function Calculator({onCalculate, retrievedCalcData}) {
           >
             State
             <select className="calculator__dropdown" id="state" name="region" onChange={handleStateChange} value={values.region}>
+              <option value="CA" name="CA">
+                CA
+              </option>
               <option value="MA" name="MA">
                 MA
               </option>
