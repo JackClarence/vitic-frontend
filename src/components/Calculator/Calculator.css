@@ -36,6 +36,13 @@
   width: 100%;
 }
 
+.calculator__nyc_option {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+}
+
 .calculator__input {
   border: none;
   border-radius: 5px;

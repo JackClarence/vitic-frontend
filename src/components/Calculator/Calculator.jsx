@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { useInput } from "../../utils/useInput";
 
 function Calculator({onCalculate, retrievedCalcData}) {
-  const defValues1 = { country: "US", region: "MA", income: "", filing_status: "Single" };
-  const defValues2 = { country: "US", region: "MA", income: "", filing_status: "Single" };
+  const defValues1 = { country: "US", region: "MA", income: "", filing_status: "Single", is_nyc_resident: false };
+  const defValues2 = { country: "US", region: "MA", income: "", filing_status: "Single", is_nyc_resident: false };
   const defPercent1 = { percentage: 0.25 };
   const defPercent2 = { percentage: 0.25 };
   
@@ -19,9 +19,21 @@ function Calculator({onCalculate, retrievedCalcData}) {
     handleChange2(evt);
   };
 
+  const handleNycResidentChange = (evt) => {
+    handleChange(evt);
+    handleChange2(evt);
+  };
+
   const calcSubmit = (evt) => {
     evt.preventDefault();
     onCalculate(values, values2, percentValues, percentValues2);
+  };
+
+  function CheckNY({ region }) {
+    if(region === "NY"){
+      return <div><label className="calculator__label calculator__nyc_option"><input type="checkbox" name="is_nyc_resident" checked={values.is_nyc_resident} onChange={handleNycResidentChange} />Lives in NYC</label></div>
+    }
+    return null;
   };
 
   useEffect(() => {
@@ -120,12 +132,16 @@ function Calculator({onCalculate, retrievedCalcData}) {
               <option value="MO" name="MO">
                 MO
               </option>
+              <option value="NY" name="NY">
+                NY
+              </option>
               <option value="VT" name="VT">
                 VT
               </option>
             </select>
           </label>
         </div>
+        <CheckNY region={values.region}/>
         <div className="calculator__group">
           <label htmlFor="percentage-first" className="calculator__label">
             Percentage of Income

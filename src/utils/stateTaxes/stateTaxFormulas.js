@@ -45,7 +45,7 @@ export const stateTaxFormulas = {
       ninthBracket = (taxable) => bracket(taxable, 1485906, Infinity, 0.123);
     } else{
       console.error;
-    }
+    };
 
     taxAmount = (firstBracket(grossIncome)+secondBracket(grossIncome)+thirdBracket(grossIncome)+fourthBracket(grossIncome)+fifthBracket(grossIncome)+sixthBracket(grossIncome)+seventhBracket(grossIncome)+eighthBracket(grossIncome)+ninthBracket(grossIncome)).toFixed(2);
     return taxAmount;
@@ -88,6 +88,77 @@ export const stateTaxFormulas = {
     const seventhBracket = (taxable) => bracket(taxable, 9191, Infinity, 0.047);
 
     taxAmount = (firstBracket(taxable)+secondBracket(taxable)+thirdBracket(taxable)+fourthBracket(taxable)+fifthBracket(taxable)+sixthBracket(taxable)+seventhBracket(taxable)).toFixed(2);
+    return taxAmount;
+  },
+
+  nyStateTaxes: function (grossIncome, filingStatus, is_nyc_resident){
+    let taxAmount = 0;
+    let firstBracket;
+    let secondBracket;
+    let thirdBracket;
+    let fourthBracket;
+    let fifthBracket;
+    let sixthBracket;
+    let seventhBracket;
+    let eighthBracket;
+    let ninthBracket;
+
+    let firstNycBracket = () => {
+      return 0;
+    };
+    let secondNycBracket = () => {
+      return 0;
+    };
+    let thirdNycBracket = () => {
+      return 0;
+    };
+    let fourthNycBracket = () => {
+      return 0;
+    };
+
+    console.log(is_nyc_resident);
+
+    if(is_nyc_resident){
+      if(filingStatus === "Single"){
+        firstNycBracket = (taxable) => bracket(taxable, 0, 12000, 0.03078);
+        secondNycBracket  = (taxable) => bracket(taxable, 12000, 25000, 0.03762);
+        thirdNycBracket = (taxable) => bracket(taxable, 25000, 50000, 0.03819);
+        fourthNycBracket = (taxable) => bracket(taxable, 50000, Infinity, 0.03876);
+      } else if(filingStatus === "Married"){
+        firstNycBracket = (taxable) => bracket(taxable, 0, 21600, 0.03078);
+        secondNycBracket  = (taxable) => bracket(taxable, 21600, 45000, 0.03762);
+        thirdNycBracket = (taxable) => bracket(taxable, 45000, 90000, 0.03819);
+        fourthNycBracket = (taxable) => bracket(taxable, 90000, Infinity, 0.03876);
+      } else{
+        console.error;
+      };
+    };
+
+    if(filingStatus === "Single"){
+      firstBracket = (taxable) => bracket(taxable, 0, 8500, 0.04);
+      secondBracket = (taxable) => bracket(taxable, 8500, 11700, 0.045);
+      thirdBracket = (taxable) => bracket(taxable, 11700, 13900, 0.0525);
+      fourthBracket = (taxable) => bracket(taxable, 13900, 80650, 0.055);
+      fifthBracket = (taxable) => bracket(taxable, 80650, 215400, 0.06);
+      sixthBracket = (taxable) => bracket(taxable, 215400, 1077550, 0.0685);
+      seventhBracket = (taxable) => bracket(taxable, 1077550, 5000000, 0.0965);
+      eighthBracket = (taxable) => bracket(taxable, 5000000, 25000000, 0.103);
+      ninthBracket = (taxable) => bracket(taxable, 25000000, Infinity, 0.109);
+    } else if(filingStatus === "Married"){
+      firstBracket = (taxable) => bracket(taxable, 0, 17150, 0.04);
+      secondBracket = (taxable) => bracket(taxable, 17150, 23600, 0.045);
+      thirdBracket = (taxable) => bracket(taxable, 23600, 27900, 0.0525);
+      fourthBracket = (taxable) => bracket(taxable, 27900, 161550, 0.055);
+      fifthBracket = (taxable) => bracket(taxable, 161500, 323200, 0.06);
+      sixthBracket = (taxable) => bracket(taxable, 323200, 2155350, 0.0685);
+      seventhBracket = (taxable) => bracket(taxable, 2155350, 5000000, 0.0965);
+      eighthBracket = (taxable) => bracket(taxable, 5000000, 25000000, 0.103);
+      ninthBracket = (taxable) => bracket(taxable, 25000000, Infinity, 0.109);
+    } else{
+      console.error;
+    };
+
+    taxAmount = (firstBracket(grossIncome)+firstNycBracket(grossIncome)+secondBracket(grossIncome)+secondNycBracket(grossIncome)+thirdBracket(grossIncome)+thirdNycBracket(grossIncome)+fourthBracket(grossIncome)+fourthNycBracket(grossIncome)+fifthBracket(grossIncome)+sixthBracket(grossIncome)+seventhBracket(grossIncome)+eighthBracket(grossIncome)+ninthBracket(grossIncome)).toFixed(2);
     return taxAmount;
   },
 

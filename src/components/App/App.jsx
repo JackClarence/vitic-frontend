@@ -32,8 +32,8 @@ function App() {
     return grossIncome * 0.0765;
   };
 
-  const monthlyNet = (grossIncome, federalTaxes, state, filingStatus) => {
-    return ((grossIncome - federalTaxes - ficaTaxes(grossIncome) - stateTaxes(state, grossIncome, filingStatus)) / 12).toFixed(2);
+  const monthlyNet = (grossIncome, federalTaxes, state, filingStatus, is_nyc_resident) => {
+    return ((grossIncome - federalTaxes - ficaTaxes(grossIncome) - stateTaxes(state, grossIncome, filingStatus, is_nyc_resident)) / 12).toFixed(2);
   };
   const netMaxRent= (monthly, percentValue) => {
     if(percentValue === 0.3){
@@ -54,7 +54,7 @@ function App() {
     const checkValue = (person, variable) => {
       return retrievedCalcData[person][variable] !== values[variable];
     };
-    if(isLoggedIn && (retrievedCalcData.date !== currentYear || checkValue(personOneOrTwo, `income`) || checkValue(personOneOrTwo, `filing_status`) || checkValue(personOneOrTwo, `region`) || checkValue(personOneOrTwo, `percentage`))){
+    if(isLoggedIn && ((retrievedCalcData === null || retrievedCalcData === undefined || retrievedCalcData.date !== currentYear) || checkValue(personOneOrTwo, `income`) || checkValue(personOneOrTwo, `filing_status`) || checkValue(personOneOrTwo, `region`) || checkValue(personOneOrTwo, `percentage`) || (values.is_nyc_resident === null || values.is_nyc_resident === undefined || checkValue(personOneOrTwo, `is_nyc_resident`)))){
       if(percentValue === 0.3){
         setGrossOrNet("Gross");
         return ((values.income/12)).toFixed(2);
@@ -67,7 +67,7 @@ function App() {
           taxes = await getTaxes(values)
             .then((res)=> {
               setErrorMessage();
-              const sortedMonthly = monthlyNet(values.income, res.federal_taxes_owed, values.region, values.filing_status);
+              const sortedMonthly = monthlyNet(values.income, res.federal_taxes_owed, values.region, values.filing_status, values.is_nyc_resident);
               return sortedMonthly;
             })
             .catch((err) => {
@@ -115,6 +115,7 @@ function App() {
       percentage: percentValues.percentage,
       monthly: monthly1.sortedMonthly,
       netMax: monthly1.netMax,
+      is_nyc_resident: values.is_nyc_resident
     }, 
     secondPerson: {
       income: values2.income, 
@@ -122,7 +123,8 @@ function App() {
       region: values2.region, 
       percentage: percentValues2.percentage,
       monthly: monthly2.sortedMonthly,
-      netMax: monthly2.netMax
+      netMax: monthly2.netMax,
+      is_nyc_resident: values.is_nyc_resident
     },
     maxRent: rentTotal,
     date: new Date().getFullYear()
