@@ -116,7 +116,6 @@ export const stateTaxFormulas = {
       return 0;
     };
 
-    console.log(is_nyc_resident);
 
     if(is_nyc_resident){
       if(filingStatus === "Single"){
