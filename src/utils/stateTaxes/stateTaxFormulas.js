@@ -12,6 +12,7 @@ const bracket = (taxable, bottom, top, percent) => {
 
 export const stateTaxFormulas = {
   caStateTaxes: function (grossIncome, filingStatus) {
+    let taxable;
     let taxAmount = 0;
     let firstBracket;
     let secondBracket;
@@ -22,6 +23,14 @@ export const stateTaxFormulas = {
     let seventhBracket;
     let eighthBracket;
     let ninthBracket;
+
+    if(filingStatus === "Single"){
+      taxable = grossIncome - 15750;
+    } else if(filingStatus === "Married"){
+      taxable = grossIncome - 31500;
+    } else{
+      console.error;
+    };
 
     if(filingStatus === "Single"){
       firstBracket = (taxable) => bracket(taxable, 0, 11079, 0.01);
@@ -47,7 +56,7 @@ export const stateTaxFormulas = {
       console.error;
     };
 
-    taxAmount = (firstBracket(grossIncome)+secondBracket(grossIncome)+thirdBracket(grossIncome)+fourthBracket(grossIncome)+fifthBracket(grossIncome)+sixthBracket(grossIncome)+seventhBracket(grossIncome)+eighthBracket(grossIncome)+ninthBracket(grossIncome)).toFixed(2);
+    taxAmount = (firstBracket(taxable)+secondBracket(taxable)+thirdBracket(taxable)+fourthBracket(taxable)+fifthBracket(taxable)+sixthBracket(taxable)+seventhBracket(taxable)+eighthBracket(taxable)+ninthBracket(taxable)).toFixed(2);
     return taxAmount;
   },
 
@@ -92,6 +101,7 @@ export const stateTaxFormulas = {
   },
 
   nyStateTaxes: function (grossIncome, filingStatus, is_nyc_resident){
+    let taxable;
     let taxAmount = 0;
     let firstBracket;
     let secondBracket;
@@ -116,8 +126,16 @@ export const stateTaxFormulas = {
       return 0;
     };
 
+    if(filingStatus === "Single"){
+      taxable = grossIncome - 8000;
+    } else if(filingStatus === "Married"){
+      taxable = grossIncome - 16050;
+    } else{
+      console.error;
+    };
 
     if(is_nyc_resident){
+
       if(filingStatus === "Single"){
         firstNycBracket = (taxable) => bracket(taxable, 0, 12000, 0.03078);
         secondNycBracket  = (taxable) => bracket(taxable, 12000, 25000, 0.03762);
@@ -157,7 +175,47 @@ export const stateTaxFormulas = {
       console.error;
     };
 
-    taxAmount = (firstBracket(grossIncome)+firstNycBracket(grossIncome)+secondBracket(grossIncome)+secondNycBracket(grossIncome)+thirdBracket(grossIncome)+thirdNycBracket(grossIncome)+fourthBracket(grossIncome)+fourthNycBracket(grossIncome)+fifthBracket(grossIncome)+sixthBracket(grossIncome)+seventhBracket(grossIncome)+eighthBracket(grossIncome)+ninthBracket(grossIncome)).toFixed(2);
+    taxAmount = (firstBracket(taxable)+firstNycBracket(taxable)+secondBracket(taxable)+secondNycBracket(taxable)+thirdBracket(taxable)+thirdNycBracket(taxable)+fourthBracket(taxable)+fourthNycBracket(taxable)+fifthBracket(taxable)+sixthBracket(taxable)+seventhBracket(taxable)+eighthBracket(taxable)+ninthBracket(taxable)).toFixed(2);
+    return taxAmount;
+  },
+
+  okStateTaxes: function (grossIncome, filingStatus){
+    let taxable;
+    let taxAmount = 0;
+    let firstBracket;
+    let secondBracket;
+    let thirdBracket;
+    let fourthBracket;
+    let fifthBracket;
+    let sixthBracket;
+
+    if(filingStatus === "Single"){
+      taxable = grossIncome - 6350;
+    } else if(filingStatus === "Married"){
+      taxable = grossIncome - 12700
+    } else{
+      console.error;
+    };
+
+    if(filingStatus === "Single"){
+      firstBracket = (taxable) => bracket(taxable, 0, 1000, 0.0025);
+      secondBracket = (taxable) => bracket(taxable, 1000, 2500, 0.0075);
+      thirdBracket = (taxable) => bracket(taxable, 2500, 3750, 0.0175);
+      fourthBracket = (taxable) => bracket(taxable, 3750, 4900, 0.0275);
+      fifthBracket = (taxable) => bracket(taxable, 4900, 7200, 0.0375);
+      sixthBracket = (taxable) => bracket(taxable, 7200, Infinity, 0.0475);
+    } else if(filingStatus === "Married"){
+      firstBracket = (taxable) => bracket(taxable, 0, 2000, 0.0025);
+      secondBracket = (taxable) => bracket(taxable, 2000, 5000, 0.0075);
+      thirdBracket = (taxable) => bracket(taxable, 5000, 7500, 0.0175);
+      fourthBracket = (taxable) => bracket(taxable, 7500, 9800, 0.0275);
+      fifthBracket = (taxable) => bracket(taxable, 9800, 14400, 0.0375);
+      sixthBracket = (taxable) => bracket(taxable, 14400, Infinity, 0.0475);
+    } else{
+      console.error;
+    };
+
+    taxAmount = (firstBracket(taxable)+secondBracket(taxable)+thirdBracket(taxable)+fourthBracket(taxable)+fifthBracket(taxable)+sixthBracket(taxable));
     return taxAmount;
   },
 

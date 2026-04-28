@@ -135,6 +135,9 @@ function Calculator({onCalculate, retrievedCalcData}) {
               <option value="NY" name="NY">
                 NY
               </option>
+              <option value="OK" name="OK">
+                OK
+              </option>
               <option value="VT" name="VT">
                 VT
               </option>
