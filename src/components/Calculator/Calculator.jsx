@@ -126,6 +126,9 @@ function Calculator({onCalculate, retrievedCalcData}) {
               <option value="CA" name="CA">
                 CA
               </option>
+              <option value="KS" name="KS">
+                KS
+              </option>
               <option value="MA" name="MA">
                 MA
               </option>

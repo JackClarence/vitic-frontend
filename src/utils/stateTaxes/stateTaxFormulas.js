@@ -25,9 +25,9 @@ export const stateTaxFormulas = {
     let ninthBracket;
 
     if(filingStatus === "Single"){
-      taxable = grossIncome - 15750;
+      taxable = grossIncome - 5706;
     } else if(filingStatus === "Married"){
-      taxable = grossIncome - 31500;
+      taxable = grossIncome - 11412;
     } else{
       console.error;
     };
@@ -57,6 +57,37 @@ export const stateTaxFormulas = {
     };
 
     taxAmount = (firstBracket(taxable)+secondBracket(taxable)+thirdBracket(taxable)+fourthBracket(taxable)+fifthBracket(taxable)+sixthBracket(taxable)+seventhBracket(taxable)+eighthBracket(taxable)+ninthBracket(taxable)).toFixed(2);
+    return taxAmount;
+  },
+
+  ksStateTaxes: function (grossIncome, filingStatus) {
+    let taxable;
+    let taxAmount = 0;
+    let firstBracket;
+    let secondBracket;
+    let thirdBracket;
+
+    if(filingStatus === "Single"){
+      taxable = grossIncome - 3605;
+    } else if(filingStatus === "Married"){
+      taxable = grossIncome - 8240;
+    } else{
+      console.error;
+    };
+
+    if(filingStatus === "Single"){
+      firstBracket = (taxable) => bracket(taxable, 0, 15000, 0.031);
+      secondBracket = (taxable) => bracket(taxable, 15000, 30000, 0.0525);
+      thirdBracket = (taxable) => bracket(taxable, 30000, Infinity, 0.057);
+    } else if(filingStatus === "Married"){
+      firstBracket = (taxable) => bracket(taxable, 0, 30000, 0.031);
+      secondBracket = (taxable) => bracket(taxable, 30000, 60000, 0.0525);
+      thirdBracket = (taxable) => bracket(taxable, 60000, Infinity, 0.057);
+    } else{
+      console.error;
+    };
+
+    taxAmount = (firstBracket(taxable)+secondBracket(taxable)+thirdBracket(taxable));
     return taxAmount;
   },
 
